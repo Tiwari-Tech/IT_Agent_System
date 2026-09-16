@@ -1,0 +1,53 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Tiwari-Tech", email = "work.somesh23@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "alembic>=1.20.0",
+    "asyncpg>=0.31.0",
+    "atlassian-python-api>=5.0.5",
+    "bcrypt>=5.0.0",
+    "beautifulsoup4>=4.15.0",
+    "black>=26.5.1",
+    "celery>=5.6.3",
+    "fastapi>=0.141.1",
+    "httpx>=0.28.1",
+    "langchain>=1.4.1",
+    "langchain-community>=0.4.2",
+    "langchain-core>=1.6.3",
+    "langchain-ollama>=1.1.0",
+    "langchain-postgres>=0.0.18",
+    "langgraph>=1.2.11",
+    "langsmith>=0.12.5",
+    "mypy>=2.3.1",
+    "openpyxl>=3.1.5",
+    "passlib[bcrypt]>=1.7.4",
+    "pgvector>=0.3.6",
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+    "pypdf>=6.19.0",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-mock>=3.15.1",
+    "python-docx>=1.2.0",
+    "python-dotenv>=1.2.3",
+    "python-jose[cryptography]>=3.5.0",
+    "python-multipart>=0.0.32",
+    "redis>=8.1.0",
+    "ruff>=0.16.8",
+    "sqlalchemy>=2.0.54",
+    "tiktoken>=0.14.0",
+    "uvicorn[standard]>=0.53.0",
+]
+
+[project.scripts]
+backend = "backend:main"
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"

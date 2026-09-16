@@ -1,0 +1,54 @@
+# Core Backend
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+python-multipart
+httpx
+
+# Database
+sqlalchemy
+asyncpg
+alembic
+pgvector
+langchain-postgres
+
+# Agentic AI
+langgraph
+langchain
+langchain-core
+langchain-community
+langchain-ollama
+
+# RAG / Document Processing
+pypdf
+python-docx
+openpyxl
+beautifulsoup4
+tiktoken
+
+# Redis / Background Tasks
+redis
+celery
+
+# Authentication & Security
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt
+
+# Jira
+atlassian-python-api
+
+# Observability
+langsmith
+
+# Testing
+pytest
+pytest-asyncio
+pytest-mock
+
+# Code Quality
+ruff
+black
+mypy
