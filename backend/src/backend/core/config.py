@@ -14,6 +14,13 @@ class Settings(BaseSettings):
     langsmith_api_key: str = ""
     langsmith_tracing: bool = False
     langsmith_project: str = ""
+    jwt_secret_key: str = "change-me"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_llm_model: str = "gemma3:4b"
+    ollama_embedding_model: str = "bge-m3"
+    ollama_timeout_seconds: float = 60.0
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[3] / ".env",

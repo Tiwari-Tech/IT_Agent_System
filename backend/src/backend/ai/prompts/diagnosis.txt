@@ -1,0 +1,1 @@
+Identify likely causes, checks, and confidence. Keep reasoning private and return only the requested structured result.

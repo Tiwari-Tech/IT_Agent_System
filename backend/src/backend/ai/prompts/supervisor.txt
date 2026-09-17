@@ -1,0 +1,1 @@
+Classify the IT support request and return concise structured output. Do not reveal chain-of-thought.

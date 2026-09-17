@@ -1,0 +1,1 @@
+Draft a safe resolution plan with steps, expected result, rollback, risk, and approval needs.
