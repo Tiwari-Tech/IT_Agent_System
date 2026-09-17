@@ -26,7 +26,7 @@ export default function MonitoringPage() {
         <HealthCard icon={Server} title="API" state={health.api} />
         <HealthCard icon={Database} title="PostgreSQL" state={health.db} />
         <HealthCard icon={Activity} title="Redis/Valkey" state={health.redis} />
-        <Card title="Ollama"><Bot className="mb-3 text-slate-400" /><EmptyState title="Health endpoint not wired" detail="Frontend is ready for Ollama status once backend exposes it." /></Card>
+        <HealthCard icon={Bot} title="Ollama" state={health.ollama} />
         <Card title="Jira"><GitBranch className="mb-3 text-slate-400" /><EmptyState title="Health endpoint pending" detail="No Jira health API exists yet." /></Card>
         <Card title="Recent failures"><ShieldAlert className="mb-3 text-slate-400" /><EmptyState title="No failure API yet" detail="Agent and integration failures will appear here when backend tracking exists." /></Card>
       </div>

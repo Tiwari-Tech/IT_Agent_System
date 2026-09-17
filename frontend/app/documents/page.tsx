@@ -26,8 +26,8 @@ export default function DocumentsPage() {
   }
   async function ingest(id: string) {
     try {
-      const result = await documentsApi.ingestTask(id);
-      setMessage(`Queued ingestion task ${result.task_id}`);
+      const result = await documentsApi.ingest(id);
+      setMessage(`Ingested ${result.chunks} chunks`);
     } catch (err) { setMessage(apiMessage(err)); }
   }
   return (

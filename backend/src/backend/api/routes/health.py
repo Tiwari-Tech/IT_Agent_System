@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 
+from backend.ai.health import check_ollama
 from backend.db.database import check_database
 from backend.db.redis import check_redis
 
@@ -33,3 +34,15 @@ async def redis_health() -> dict[str, str]:
             detail={"status": "error", "service": "redis", "error": exc.__class__.__name__},
         ) from exc
     return {"status": "ok", "service": "redis"}
+
+
+@router.get("/ollama")
+async def ollama_health() -> dict[str, str]:
+    try:
+        await check_ollama()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={"status": "error", "service": "ollama", "error": exc.__class__.__name__},
+        ) from exc
+    return {"status": "ok", "service": "ollama"}

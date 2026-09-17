@@ -18,7 +18,7 @@ function RegisterInner() {
   const [busy, setBusy] = useState(false);
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4">
-      <form className="w-full max-w-md rounded border border-slate-200 bg-white p-6" onSubmit={async (event) => { event.preventDefault(); setBusy(true); try { await register(form); router.push("/"); } finally { setBusy(false); } }}>
+      <form className="w-full max-w-md rounded border border-slate-200 bg-white p-6" onSubmit={async (event) => { event.preventDefault(); setBusy(true); try { await register(form); router.push("/login"); } finally { setBusy(false); } }}>
         <h1 className="text-xl font-semibold">Create account</h1>
         <label className="mt-6 block text-sm font-medium">Name</label><Input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} required />
         <label className="mt-4 block text-sm font-medium">Email</label><Input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} required />

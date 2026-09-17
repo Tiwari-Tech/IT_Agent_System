@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 
 import type { DocumentItem, Message, Ticket, TicketList, User, WorkflowResult } from "@/lib/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 const TOKEN_KEY = "it_agent_token";
 
 export const api = axios.create({ baseURL: API_BASE_URL, timeout: 15000 });
@@ -28,10 +28,11 @@ export function setToken(token: string | null) {
 }
 
 export function apiMessage(error: unknown) {
-  const err = error as AxiosError<{ detail?: string | { error?: string } }>;
+  const err = error as AxiosError<{ detail?: string | { error?: string }; error?: { message?: string } }>;
   const detail = err.response?.data?.detail;
   if (typeof detail === "string") return detail;
   if (detail?.error) return detail.error;
+  if (err.response?.data?.error?.message) return err.response.data.error.message;
   return err.message || "Request failed";
 }
 
@@ -58,6 +59,7 @@ export const healthApi = {
   api: async () => (await api.get("/health")).data,
   db: async () => (await api.get("/health/db")).data,
   redis: async () => (await api.get("/health/redis")).data,
+  ollama: async () => (await api.get("/health/ollama")).data,
 };
 
 export const workflowsApi = {
@@ -85,6 +87,9 @@ export const jiraApi = {
 };
 
 export function createChatSocket(token: string | null) {
-  const url = API_BASE_URL.replace(/^http/, "ws") + `/api/v1/ws/chat${token ? `?token=${encodeURIComponent(token)}` : ""}`;
+  const base = API_BASE_URL
+    ? API_BASE_URL.replace(/^http/, "ws")
+    : `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`;
+  const url = `${base}/api/v1/ws/chat${token ? `?token=${encodeURIComponent(token)}` : ""}`;
   return new WebSocket(url);
 }

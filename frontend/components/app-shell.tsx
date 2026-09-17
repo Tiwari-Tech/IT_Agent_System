@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Activity, Bell, Bot, CheckSquare, Database, FileText, Gauge, GitBranch, Home, LogOut, Menu, Shield, Ticket, UserCog, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AuthProvider, useAuth } from "@/lib/auth";
 
@@ -23,11 +23,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 function ShellInner({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const items = nav.filter((item) => !item.admin || user?.role === "it_admin");
+
+  useEffect(() => {
+    if (!loading && !user) router.replace("/login");
+  }, [loading, router, user]);
+
+  if (loading || !user) {
+    return <div className="min-h-screen bg-slate-100" />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-950">
@@ -44,7 +52,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="absolute bottom-0 left-0 right-0 border-t border-slate-200 p-4">
           <div className="mb-3 text-sm"><p className="font-medium">{user?.name || "Not signed in"}</p><p className="text-slate-500">{user?.role || "Authenticate to use APIs"}</p></div>
-          {user ? <button className="flex items-center gap-2 text-sm text-slate-600" onClick={() => { logout(); router.push("/login"); }}><LogOut size={16} />Logout</button> : <Link className="text-sm font-medium text-blue-700" href="/login">Login</Link>}
+          <button className="flex items-center gap-2 text-sm text-slate-600" onClick={() => { logout(); router.replace("/login"); }}><LogOut size={16} />Logout</button>
         </div>
       </aside>
       <div className="md:pl-72">

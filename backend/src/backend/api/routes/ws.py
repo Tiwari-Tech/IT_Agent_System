@@ -40,6 +40,11 @@ async def chat(websocket: WebSocket) -> None:
             if not ticket_id:
                 await websocket.send_json({"type": "error", "message": "ticket_id is required"})
                 continue
+            try:
+                ticket_uuid = uuid.UUID(str(ticket_id))
+            except ValueError:
+                await websocket.send_json({"type": "error", "message": "Invalid ticket_id"})
+                continue
 
             await websocket.send_json({"type": "agent_started", "agent": "workflow"})
             async with session_scope() as session:
@@ -47,7 +52,7 @@ async def chat(websocket: WebSocket) -> None:
                 if db_user is None:
                     await websocket.send_json({"type": "error", "message": "User not found"})
                     continue
-                result = await run_workflow_for_ticket(session, uuid.UUID(str(ticket_id)), db_user)
+                result = await run_workflow_for_ticket(session, ticket_uuid, db_user)
 
             await websocket.send_json({"type": "agent_completed", "agent": "workflow", "workflow_id": result.workflow_id})
             if result.requires_human_approval:

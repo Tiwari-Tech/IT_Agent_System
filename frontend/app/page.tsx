@@ -45,7 +45,7 @@ export default function DashboardPage() {
               <Health icon={Server} label="API" value="Connected when /health responds" />
               <Health icon={Database} label="PostgreSQL" value="Uses /health/db" />
               <Health icon={Activity} label="Redis/Valkey" value="Uses /health/redis" />
-              <Health icon={Bot} label="Agents" value="Pending backend workflow" muted />
+              <Health icon={Bot} label="Agents" value="Runs from ticket workflow" />
             </div>
             <div className="mt-4 rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">{high} high-priority tickets need attention.</div>
           </Card>

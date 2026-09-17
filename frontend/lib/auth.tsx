@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { apiMessage, authApi, setToken } from "@/lib/api";
+import { apiMessage, authApi, getToken, setToken } from "@/lib/api";
 import type { User } from "@/lib/types";
 
 type AuthContextValue = {
@@ -18,11 +18,21 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(getToken()));
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    authApi.me().then(setUser).catch(() => setUser(null)).finally(() => setLoading(false));
+    if (!getToken()) {
+      return;
+    }
+
+    authApi.me()
+      .then(setUser)
+      .catch(() => {
+        setToken(null);
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const value = useMemo<AuthContextValue>(() => ({
@@ -45,9 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null);
       try {
         await authApi.register(data);
-        const token = await authApi.login(data.email, data.password);
-        setToken(token.access_token);
-        setUser(await authApi.me());
       } catch (err) {
         const message = apiMessage(err);
         setError(message);
