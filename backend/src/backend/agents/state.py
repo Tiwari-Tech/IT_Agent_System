@@ -19,6 +19,10 @@ class AgentWorkflowState(TypedDict, total=False):
     security_risk: str | None
     resolution_plan: str | None
     resolution_result: str | None
+    proposed_action: str | None
+    resolution_steps: list[str]
+    expected_result: str | None
+    rollback_plan: str | None
     review_result: str | None
     requires_human_approval: bool
     workflow_id: str
@@ -44,12 +48,19 @@ class SecurityOutput(BaseModel):
 
 
 class ResolutionOutput(BaseModel):
-    resolution_plan: str
+    proposed_action: str
+    steps: list[str]
+    expected_result: str
+    risk: str = Field(pattern="^(low|medium|high|critical)$")
+    rollback_plan: str
+    approval_required: bool = False
+    resolution_plan: str = ""
     resolution_result: str = "pending"
 
 
 class ReviewerOutput(BaseModel):
     review_result: str = Field(pattern="^(approved|rejected|request_more_information)$")
+    feedback: str = ""
 
 
 def chunks_to_context(chunks: list[RetrievedChunk]) -> str:

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button, Select, Textarea } from "@/components/ui/form";
 import { EmptyState, ErrorState } from "@/components/ui/states";
-import { apiMessage, ticketsApi } from "@/lib/api";
+import { apiMessage, ticketsApi, workflowsApi } from "@/lib/api";
 import type { Message, Ticket } from "@/lib/types";
 
 export default function TicketDetailPage() {
@@ -17,6 +17,7 @@ export default function TicketDetailPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
+  const [workflow, setWorkflow] = useState("");
 
   useEffect(() => {
     ticketsApi.get(id).then(setTicket).catch((err) => setError(apiMessage(err)));
@@ -29,6 +30,13 @@ export default function TicketDetailPage() {
   async function send() {
     if (!content.trim()) return;
     try { const message = await ticketsApi.message(id, content); setMessages([...messages, message]); setContent(""); } catch (err) { setError(apiMessage(err)); }
+  }
+  async function runWorkflow() {
+    try {
+      const result = await workflowsApi.runTicket(id);
+      setWorkflow(`Workflow ${result.workflow_id}: ${result.status}${result.requires_human_approval ? " · approval required" : ""}`);
+      setTicket(await ticketsApi.get(id));
+    } catch (err) { setError(apiMessage(err)); }
   }
 
   return (
@@ -47,7 +55,7 @@ export default function TicketDetailPage() {
           </div>
           <div className="space-y-4">
             <Card title="Manage"><label className="text-sm font-medium">Status</label><Select className="mb-3" value={ticket.status} onChange={(e) => patch({ status: e.target.value as Ticket["status"] })}><option value="open">Open</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option></Select><label className="text-sm font-medium">Priority</label><Select value={ticket.priority} onChange={(e) => patch({ priority: e.target.value as Ticket["priority"] })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></Select></Card>
-            <Card title="AI workflow"><Workflow /></Card>
+            <Card title="AI workflow"><Workflow /><Button className="mt-4 w-full" onClick={runWorkflow}>Run workflow</Button>{workflow && <p className="mt-2 text-sm text-slate-600">{workflow}</p>}</Card>
             <Card title="Audit activity"><EmptyState title="Audit API not available yet" detail="Ticket updates are audited by backend, but no read endpoint exists yet." /></Card>
           </div>
         </div>

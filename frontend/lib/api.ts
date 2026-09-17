@@ -2,7 +2,7 @@
 
 import axios, { AxiosError } from "axios";
 
-import type { Message, Ticket, TicketList, User } from "@/lib/types";
+import type { DocumentItem, Message, Ticket, TicketList, User, WorkflowResult } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 const TOKEN_KEY = "it_agent_token";
@@ -58,6 +58,30 @@ export const healthApi = {
   api: async () => (await api.get("/health")).data,
   db: async () => (await api.get("/health/db")).data,
   redis: async () => (await api.get("/health/redis")).data,
+};
+
+export const workflowsApi = {
+  runTicket: async (ticketId: string) => (await api.post<WorkflowResult>(`/api/v1/workflows/tickets/${ticketId}/run`)).data,
+};
+
+export const documentsApi = {
+  list: async () => (await api.get<{ items: DocumentItem[] }>("/api/v1/documents")).data,
+  get: async (id: string) => (await api.get<DocumentItem>(`/api/v1/documents/${id}`)).data,
+  upload: async (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    return (await api.post<DocumentItem>("/api/v1/documents/upload", form)).data;
+  },
+  ingest: async (id: string) => (await api.post<{ document_id: string; chunks: number }>(`/api/v1/documents/${id}/ingest`)).data,
+  ingestTask: async (id: string) => (await api.post<{ task_id: string; status: string }>(`/api/v1/documents/${id}/ingest-task`)).data,
+};
+
+export const jiraApi = {
+  createIssue: async (data: { summary: string; description: string; issue_type?: string }) => (await api.post<{ data: Record<string, unknown> }>("/api/v1/jira/issues", data)).data,
+  getIssue: async (key: string) => (await api.get<{ data: Record<string, unknown> }>(`/api/v1/jira/issues/${key}`)).data,
+  updateIssue: async (key: string, fields: Record<string, unknown>) => (await api.patch<{ data: Record<string, unknown> }>(`/api/v1/jira/issues/${key}`, { fields })).data,
+  addComment: async (key: string, body: string) => (await api.post<{ data: Record<string, unknown> }>(`/api/v1/jira/issues/${key}/comments`, { body })).data,
+  syncStatus: async (ticketId: string, transition_id: string) => (await api.post<{ ok: boolean }>(`/api/v1/jira/tickets/${ticketId}/sync-status`, { transition_id })).data,
 };
 
 export function createChatSocket(token: string | null) {

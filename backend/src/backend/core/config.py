@@ -11,9 +11,12 @@ class Settings(BaseSettings):
     jira_email: str = ""
     jira_project_key: str = ""
     jira_api_token: str = ""
+    jira_timeout_seconds: float = 15.0
     langsmith_api_key: str = ""
     langsmith_tracing: bool = False
     langsmith_project: str = ""
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    max_upload_bytes: int = 10_485_760
     jwt_secret_key: str = "change-me"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
@@ -25,6 +28,8 @@ class Settings(BaseSettings):
     rag_chunk_size: int = 1200
     rag_chunk_overlap: int = 200
     rag_top_k: int = 5
+    celery_broker_url: str | None = None
+    celery_result_backend: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[3] / ".env",

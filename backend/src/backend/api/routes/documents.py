@@ -13,6 +13,7 @@ from backend.schemas.document import (
     DocumentResponse,
     IngestResponse,
 )
+from backend.worker.tasks import ingest_document_task
 
 router = APIRouter(prefix="/api/v1/documents", tags=["documents"])
 
@@ -29,6 +30,12 @@ async def upload_document(
 @router.post("/{document_id}/ingest", response_model=IngestResponse)
 async def ingest(document_id: uuid.UUID, _: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)) -> IngestResponse:
     return IngestResponse(document_id=document_id, chunks=await ingest_document(session, document_id))
+
+
+@router.post("/{document_id}/ingest-task")
+async def ingest_task(document_id: uuid.UUID, _: User = Depends(get_current_user)) -> dict[str, str]:
+    task = ingest_document_task.delay(str(document_id))
+    return {"task_id": task.id, "status": "queued"}
 
 
 @router.get("", response_model=DocumentListResponse)
