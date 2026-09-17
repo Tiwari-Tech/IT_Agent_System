@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     ollama_llm_model: str = "gemma3:4b"
     ollama_embedding_model: str = "bge-m3"
     ollama_timeout_seconds: float = 60.0
+    document_storage_dir: str = "uploads/documents"
+    rag_chunk_size: int = 1200
+    rag_chunk_overlap: int = 200
+    rag_top_k: int = 5
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[3] / ".env",

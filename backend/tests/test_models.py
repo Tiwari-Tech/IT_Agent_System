@@ -11,6 +11,7 @@ def test_metadata_has_expected_tables() -> None:
     assert set(Base.metadata.tables) == {
         "agent_runs",
         "audit_logs",
+        "document_chunks",
         "documents",
         "messages",
         "tickets",
